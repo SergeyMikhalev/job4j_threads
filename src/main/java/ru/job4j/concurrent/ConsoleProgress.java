@@ -22,6 +22,7 @@ public class ConsoleProgress implements Runnable {
                 Thread.currentThread().interrupt();
             }
         }
+
     }
 
 }
