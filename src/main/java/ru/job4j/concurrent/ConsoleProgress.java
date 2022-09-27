@@ -1,7 +1,6 @@
 package ru.job4j.concurrent;
 
 public class ConsoleProgress implements Runnable {
-    private static Character[] process = {'\\', '|', '/'};
 
     public static void main(String[] args) throws InterruptedException {
         Thread thread = new Thread(new ConsoleProgress());
@@ -12,9 +11,13 @@ public class ConsoleProgress implements Runnable {
 
     @Override
     public void run() {
+        Character[] process = {'\\', '|', '/'};
         int i = 0;
+        int index = 0;
         while (!Thread.currentThread().isInterrupted()) {
-            System.out.print("\r Loading... " + process[i++ % 3]);
+            index = i % 3;
+            System.out.print("\r Loading... " + process[index]);
+            i++;
             try {
                 Thread.sleep(500);
             } catch (InterruptedException e) {
