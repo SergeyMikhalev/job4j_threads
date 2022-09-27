@@ -14,6 +14,7 @@ public class ConsoleProgress implements Runnable {
         Character[] process = {'\\', '|', '/'};
         int i = 0;
         int index = 0;
+
         while (!Thread.currentThread().isInterrupted()) {
             index = i % 3;
             System.out.print("\r Loading... " + process[index]);
