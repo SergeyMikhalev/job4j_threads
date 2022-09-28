@@ -13,20 +13,16 @@ public class ConsoleProgress implements Runnable {
     public void run() {
         Character[] process = {'\\', '|', '/'};
         int i = 0;
-        int index = 0;
 
         while (!Thread.currentThread().isInterrupted()) {
-            index = i % 3;
-            System.out.print("\r Loading... " + process[index]);
+            System.out.print("\r Loading... " + process[i % 3]);
             i++;
             try {
                 Thread.sleep(500);
             } catch (InterruptedException e) {
-                System.out.print("\r Loaded");
                 Thread.currentThread().interrupt();
             }
         }
-
     }
 
 }
