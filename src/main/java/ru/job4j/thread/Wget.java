@@ -37,7 +37,7 @@ public class Wget implements Runnable {
                 while ((bytesRead = in.read(dataBuffer, 0, 1024)) != -1) {
                     fileOutputStream.write(dataBuffer, 0, bytesRead);
                     curMills = System.currentTimeMillis();
-                    delta =curMills-pastMills;
+                    delta = curMills - pastMills;
                     pastMills = curMills;
                     Thread.sleep(1000);
                 }
@@ -50,8 +50,8 @@ public class Wget implements Runnable {
     }
 
     public static void main(String[] args) throws InterruptedException {
-        //String url = args[0];
-        //int speed = Integer.parseInt(args[1]);
+        /*String url = args[0];
+        int speed = Integer.parseInt(args[1]);*/
         Thread wget = new Thread(new Wget(EXAMPLE, 10));
         wget.start();
         wget.join();
