@@ -11,11 +11,17 @@ public class Wget implements Runnable {
             "https://raw.githubusercontent.com/peterarsentev/course_test/master/pom.xml";
 
     private final String url;
+    /**
+     * Параметр скорости определяет максимальное количество
+     * пакетов по 1 КБ которое можно скачивать за 1 секунду
+     */
     private final int speed;
+    private final int delay;
 
     public Wget(String url, int speed) {
         this.url = url;
         this.speed = speed;
+        this.delay = 1000 / speed;
     }
 
     @Override
@@ -23,23 +29,23 @@ public class Wget implements Runnable {
         try {
             URL targetURL = new URL(url);
             String filename = "tmp_" + Path.of(targetURL.getFile()).getFileName().toString();
-
-            System.out.println(filename);
             try (BufferedInputStream in = new BufferedInputStream(targetURL.openStream());
                  FileOutputStream fileOutputStream = new FileOutputStream(filename)) {
-
-
                 byte[] dataBuffer = new byte[1024];
                 int bytesRead;
-                long pastMills = System.currentTimeMillis();
-                long curMills;
+                boolean continueReading = true;
+                long mills;
                 long delta;
-                while ((bytesRead = in.read(dataBuffer, 0, 1024)) != -1) {
-                    fileOutputStream.write(dataBuffer, 0, bytesRead);
-                    curMills = System.currentTimeMillis();
-                    delta = curMills - pastMills;
-                    pastMills = curMills;
-                    Thread.sleep(1000);
+                while (continueReading) {
+                    mills = System.currentTimeMillis();
+                    continueReading = ((bytesRead = in.read(dataBuffer, 0, 1024)) != -1);
+                    if (continueReading) {
+                        fileOutputStream.write(dataBuffer, 0, bytesRead);
+                    }
+                    delta = System.currentTimeMillis() - mills;
+                    if (delta < delay) {
+                        Thread.sleep(delay - delta);
+                    }
                 }
             } catch (IOException | InterruptedException e) {
                 e.printStackTrace();
@@ -50,10 +56,14 @@ public class Wget implements Runnable {
     }
 
     public static void main(String[] args) throws InterruptedException {
-        /*String url = args[0];
-        int speed = Integer.parseInt(args[1]);*/
-        Thread wget = new Thread(new Wget(EXAMPLE, 10));
-        wget.start();
-        wget.join();
+        WgetValidator validator = new WgetValidator();
+        if (validator.validate(args)) {
+            Thread wget = new Thread(new Wget(validator.getUrl(),
+                    validator.getSpeed()));
+            wget.start();
+            wget.join();
+        } else {
+            System.out.println("Неверно заданы параметры приложения!");
+        }
     }
 }
