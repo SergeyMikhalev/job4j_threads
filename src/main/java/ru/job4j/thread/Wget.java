@@ -38,7 +38,8 @@ public class Wget implements Runnable {
                 long delta;
                 while (continueReading) {
                     mills = System.currentTimeMillis();
-                    continueReading = ((bytesRead = in.read(dataBuffer, 0, 1024)) != -1);
+                    bytesRead = in.read(dataBuffer, 0, 1024);
+                    continueReading = (bytesRead != -1);
                     if (continueReading) {
                         fileOutputStream.write(dataBuffer, 0, bytesRead);
                     }
