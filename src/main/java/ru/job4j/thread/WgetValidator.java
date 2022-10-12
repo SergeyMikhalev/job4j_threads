@@ -7,26 +7,29 @@ public class WgetValidator {
     public WgetValidator() {
     }
 
-    public boolean validate(String... args) {
+    public void validate(String... args) {
         if (args.length < 2) {
-            return false;
+            throw new IllegalArgumentException("Недостаточное "
+                    + "количество параметров для запуска. Требуется 2.");
         }
 
         try {
             speed = Integer.parseInt(args[1]);
         } catch (NumberFormatException e) {
-            return false;
+            throw new IllegalArgumentException("Параметр ограничения "
+                    + "скорости должен быть целым числом!");
         }
         if (speed < 1) {
-            return false;
+            throw new IllegalArgumentException("Минимальное ограничение "
+                    + "скорости = 1");
         }
 
         url = args[0];
         if (url.isEmpty()) {
-            return false;
+            throw new IllegalArgumentException("Не задан"
+                    + "файл для скачивания!");
         }
 
-        return true;
     }
 
     public String getUrl() {
