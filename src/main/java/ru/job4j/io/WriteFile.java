@@ -5,7 +5,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
-public class WriteFile {
+public final class WriteFile {
     private final File file;
 
     public WriteFile(File file) {
