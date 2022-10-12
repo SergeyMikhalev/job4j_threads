@@ -65,6 +65,7 @@ public class Wget implements Runnable {
         }
     }
 
+
     public static void main(String[] args) throws InterruptedException {
         EncodingUtils.setConsoleEncodingUTF8();
         WgetValidator validator = new WgetValidator();
