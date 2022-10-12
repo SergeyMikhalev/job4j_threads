@@ -1,5 +1,7 @@
 package ru.job4j.thread;
 
+import ru.job4j.EncodingUtils;
+
 import java.io.BufferedInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -11,10 +13,6 @@ public class Wget implements Runnable {
             "https://raw.githubusercontent.com/peterarsentev/course_test/master/pom.xml";
 
     private final String url;
-    /**
-     * Параметр скорости определяет максимальное количество
-     * пакетов по 1 КБ которое можно скачивать за 1 секунду
-     */
     private final int speed;
     private final int delay;
 
@@ -57,6 +55,7 @@ public class Wget implements Runnable {
     }
 
     public static void main(String[] args) throws InterruptedException {
+        EncodingUtils.setConsoleEncodingUTF8();
         WgetValidator validator = new WgetValidator();
         if (validator.validate(args)) {
             Thread wget = new Thread(new Wget(validator.getUrl(),
@@ -64,7 +63,7 @@ public class Wget implements Runnable {
             wget.start();
             wget.join();
         } else {
-            System.out.println("Неверно заданы параметры приложения!");
+            System.out.println("РќРµРІРµСЂРЅРѕ Р·Р°РґР°РЅС‹ Р°СЂРіСѓРјРµРЅС‚С‹ РїСЂРѕРіСЂР°РјРјС‹!");
         }
     }
 }
