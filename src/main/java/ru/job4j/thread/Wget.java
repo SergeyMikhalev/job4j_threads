@@ -51,7 +51,7 @@ public class Wget implements Runnable {
                 if (continueReading) {
                     fileOutputStream.write(dataBuffer, 0, bytesRead);
                 }
-                if (bytesReadAccum >= (long)speed * MB) {
+                if (bytesReadAccum >= (long) speed * MB) {
                     bytesReadAccum = 0;
                     delta = System.currentTimeMillis() - startMills;
                     startMills = System.currentTimeMillis();
