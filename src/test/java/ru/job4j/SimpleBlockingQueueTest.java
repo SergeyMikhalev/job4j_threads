@@ -4,7 +4,6 @@ import org.junit.Test;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.assertIterableEquals;
 
@@ -12,15 +11,27 @@ public class SimpleBlockingQueueTest {
 
     @Test
     public void someTest() throws InterruptedException {
-        SimpleBlockingQueue<Integer> queue = new SimpleBlockingQueue<>();
+        SimpleBlockingQueue<Integer> queue = new SimpleBlockingQueue<>(5);
         CopyOnWriteArrayList<Integer> list = new CopyOnWriteArrayList<>();
 
         Thread producer = new Thread(() -> {
-            IntStream.range(0, 7).forEach(queue::offer);
+            try {
+                for (int i = 0; i < 7; i++) {
+                    queue.offer(i);
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         });
 
         Thread consumer = new Thread(() -> {
-            IntStream.range(0, 7).forEach(i -> list.add(queue.poll()));
+            try {
+                for (int i = 0; i < 7; i++) {
+                    list.add(queue.poll());
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         });
 
         consumer.start();
