@@ -19,7 +19,7 @@ public class SimpleBlockingQueue<T> {
     }
 
     public synchronized void offer(T value) throws InterruptedException {
-        while (queue.size() > queueMaxSize) {
+        while (queue.size() >= queueMaxSize) {
             wait();
         }
         queue.offer(value);
