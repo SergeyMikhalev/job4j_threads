@@ -20,17 +20,16 @@ public class FindIndex<T> extends RecursiveTask<Integer> {
 
     @Override
     protected Integer compute() {
-        int result = -1;
-        System.out.println("Range -> [" + start + ":" + end + "}");
+        int result;
         if ((end - start) > LINEAR_ALG_SIZE) {
-            result = big();
+            result = bigSearch();
         } else {
-            result = small();
+            result = smallSearch();
         }
         return result;
     }
 
-    private Integer small() {
+    private Integer smallSearch() {
         int result = -1;
         for (int i = start; i < end; i++) {
             if (target.equals(objects[i])) {
@@ -41,9 +40,8 @@ public class FindIndex<T> extends RecursiveTask<Integer> {
         return result;
     }
 
-    private Integer big() {
+    private Integer bigSearch() {
         int mid = start + (end - start) / 2;
-        System.out.println(mid);
         FindIndex<T> leftFind = new FindIndex<>(objects, start, mid, target);
         FindIndex<T> rightFind = new FindIndex<>(objects, mid, end, target);
         leftFind.fork();
