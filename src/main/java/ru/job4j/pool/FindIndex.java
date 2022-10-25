@@ -20,13 +20,10 @@ public class FindIndex<T> extends RecursiveTask<Integer> {
 
     @Override
     protected Integer compute() {
-        int result;
-        if ((end - start) > LINEAR_ALG_SIZE) {
-            result = bigSearch();
-        } else {
-            result = smallSearch();
+        if ((end - start) <= LINEAR_ALG_SIZE) {
+            return smallSearch();
         }
-        return result;
+        return bigSearch();
     }
 
     private Integer smallSearch() {
@@ -49,11 +46,9 @@ public class FindIndex<T> extends RecursiveTask<Integer> {
         return Math.max(leftFind.join(), rightFind.join());
     }
 
-    public static void main(String[] args) {
-        Integer[] ints = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 22};
-        Integer[] ints2 = {1, 2, 3, 4, 5, 6};
+
+    public static <T> int find(T[] array, T element) {
         ForkJoinPool forkJoinPool = ForkJoinPool.commonPool();
-        int result = forkJoinPool.invoke(new FindIndex<>(ints, 0, ints.length, 22));
-        System.out.println(result);
+        return forkJoinPool.invoke(new FindIndex<T>(array, 0, array.length, element));
     }
 }
