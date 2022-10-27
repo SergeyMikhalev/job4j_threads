@@ -1,7 +1,7 @@
 package ru.job4j.pool;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -65,67 +65,38 @@ public class RowColSum {
     public static Sums[] sum(int[][] matrix) {
         Sums[] result = new Sums[matrix.length];
         for (int i = 0; i < matrix.length; i++) {
-            result[i] = new Sums(colSum(matrix, i), rowSum(matrix, i));
+            result[i] = oneRowColSum(matrix, i);
         }
         return result;
     }
 
     public static Sums[] asyncSum(int[][] matrix) throws ExecutionException, InterruptedException {
-        ArrayList<CompletableFuture<Integer>> tasks = new ArrayList<>(2 * matrix.length);
+        List<CompletableFuture<Sums>> tasks = new ArrayList<>(matrix.length);
         for (int i = 0; i < matrix.length; i++) {
-            tasks.add(asyncColSum(matrix, i));
-            tasks.add(asyncRowSum(matrix, i));
+            tasks.add(asyncOneRowColSum(matrix, i));
         }
-
         Sums[] result = new Sums[matrix.length];
         for (int i = 0; i < matrix.length; i++) {
-            result[i] = new Sums(
-                    tasks.get(2 * i).get(),
-                    tasks.get(2 * i + 1).get()
-            );
+            result[i] = tasks.get(i).get();
         }
-
         return result;
     }
 
-    public static int colSum(int[][] matrix, int colNum) {
-        int result = 0;
+    public static Sums oneRowColSum(int[][] matrix, int num) {
+        int colSum = 0;
+        int rowSum = 0;
         for (int i = 0; i < matrix.length; i++) {
-            result += matrix[i][colNum];
+            rowSum += matrix[num][i];
+            colSum += matrix[i][num];
         }
-        return result;
+        return new Sums(rowSum, colSum);
     }
 
-    public static int rowSum(int[][] matrix, int rowNum) {
-        int result = 0;
-        for (int i = 0; i < matrix.length; i++) {
-            result += matrix[rowNum][i];
-        }
-        return result;
-    }
-
-    public static CompletableFuture<Integer> asyncRowSum(int[][] matrix, int rowNum) {
+    public static CompletableFuture<Sums> asyncOneRowColSum(int[][] matrix, int num) {
         return CompletableFuture.supplyAsync(
                 () -> {
-                    return rowSum(matrix, rowNum);
+                    return oneRowColSum(matrix, num);
                 }
         );
-    }
-
-    public static CompletableFuture<Integer> asyncColSum(int[][] matrix, int colNum) {
-        return CompletableFuture.supplyAsync(
-                () -> {
-                    return colSum(matrix, colNum);
-                }
-        );
-    }
-
-    public static void main(String[] args) throws InterruptedException, ExecutionException {
-        int[][] matrix = {{1, 1, 1, 1}, {1, 2, 1, 1}, {1, 1, 1, 1}, {1, 1, 1, 1}};
-        System.out.println("Sync call");
-        Arrays.stream(sum(matrix)).forEach(System.out::println);
-        System.out.println("Async call");
-        Arrays.stream(asyncSum(matrix)).forEach(System.out::println);
-
     }
 }
